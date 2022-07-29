@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const con = require("../lib/db_connection");
+const jwt = require("jsonwebtoken");
+const middleware = require("../middleware/auth");
 
 // Get All Users
 router.get("/", (req, res) => {
@@ -42,31 +44,55 @@ router.post("/", (req, res) => {
   }
 });
 
-// Update a user
-router.put("/:id", (req, res) => {
-  const {
-    email,
-    password,
-    full_name,
-    billing_address,
-    default_shipping_address,
-    country,
-    phone,
-    user_type,
-  } = req.body;
+// Edit user
 
-  try {
-    con.query(
-      `UPDATE users SET email = "${email}", password = "${password}", full_name = "${full_name}", billing_address = "${billing_address}", default_shipping_address = "${default_shipping_address}",country = "${country}", phone = "${phone}", user_type = "${user_type}" WHERE user_id = "${req.params.id}" `,
-      (err, result) => {
+router.put("/", middleware, (req, res) => {
+  // Sql Check if the email is in the database
+
+  let sql = "SELECT * FROM users WHERE ?";
+  const id = {
+    user_id: req.user.user_id,
+  };
+
+  // Connect and get results
+  con.query(sql, id, (err, result) => {
+    if (err) throw err;
+
+    if (result.length === 0) {
+      res.send("User not found");
+    } else {
+      let updateSql = `UPDATE users SET ? WHERE user_id = ${req.user.user_id}`;
+      const {
+        email,
+        password,
+        full_name,
+        billing_address,
+        default_shipping_address,
+        country,
+        phone,
+        user_type,
+      } = req.body;
+      console.log(email);
+
+      const salt = bcrypt.genSaltSync(10);
+      const hash = bcrypt.hashSync(password, salt);
+
+      let user = {
+        email,
+        password: hash,
+        full_name,
+        billing_address,
+        default_shipping_address,
+        country,
+        phone,
+        user_type,
+      };
+      con.query(updateSql, user, (err, result) => {
         if (err) throw err;
         res.send(result);
-      }
-    );
-  } catch (error) {
-    console.log(error);
-    res.status(400).send(error);
-  }
+      });
+    }
+  });
 });
 
 // Gets one user
@@ -128,7 +154,9 @@ const bcrypt = require("bcryptjs");
 // The Route where Encryption starts
 router.post("/register", (req, res) => {
   try {
+    // Query
     let sql = "INSERT INTO users SET ?";
+    // this is the body its requesting
     const {
       full_name,
       email,
@@ -144,6 +172,7 @@ router.post("/register", (req, res) => {
     const salt = bcrypt.genSaltSync(10);
     const hash = bcrypt.hashSync(password, salt);
 
+    // database terms
     let user = {
       full_name,
       email,
@@ -164,8 +193,6 @@ router.post("/register", (req, res) => {
     console.log(error);
   }
 });
-
-const jwt = require("jsonwebtoken");
 
 // Login
 router.post("/login", (req, res) => {
@@ -233,9 +260,6 @@ router.get("/users/verify", (req, res) => {
     }
   });
 });
-
-const middleware = require("../middleware/auth");
-const { application } = require("express");
 
 router.get("/", middleware, (req, res) => {
   try {
