@@ -94,12 +94,17 @@
       <td>${product.category}</td>
       <td>${product.create_date}</td>
       <td>${product.stock}</td>
+      <td><button onclick="singleUser(${product.product_id})">View</butoon></td>
     </tr>
     
  
 
           `;
         });
+      }
+
+      function singleUser(id) {
+        console.log(id);
       }
     </script>
     <!-- JavaScript Bundle with Popper -->
