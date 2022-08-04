@@ -138,7 +138,7 @@
           "#default_shipping_address"
         ).value;
         const phone = document.querySelector("#phone").value;
-        fetch("http://localhost:6969/users/register", {
+        fetch("https://node-js-db-test.herokuapp.com/users/register", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
