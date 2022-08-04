@@ -31,11 +31,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav">
-            <a class="nav-link active" aria-current="page" href="./Index.html"
+            <a class="nav-link active" aria-current="page" href="./index.html"
               >Register</a
             >
-            <a class="nav-link" href="./Login.html">Login</a>
-            <a class="nav-link" href="./Users.html">Users</a>
+            <a class="nav-link" href="./login.html">Login</a>
+            <a class="nav-link" href="./users.html">Users</a>
             <a class="nav-link" href="./products.html">Products</a>
           </div>
         </div>
@@ -65,7 +65,7 @@
 
       const userContainer = document.getElementById("users");
 
-      fetch("http://localhost:6969/users")
+      fetch("http://localhost:6969/users/")
         .then((res) => res.json())
         .then((data) => {
           items = data;
