@@ -12,9 +12,9 @@ const productRoute = require("./routes/productRoute");
 const orderRoute = require("./routes/orderRoute");
 const categoryRoute = require("./routes/categoryRoute");
 
-app.get("/", (req, res) => {
-  res.json({ msg: "Welcome" });
-});
+// app.get("/", (req, res) => {
+//   res.json({ msg: "Welcome" });
+// });
 
 app.use("/users", userRoute);
 app.use("/products", productRoute);
