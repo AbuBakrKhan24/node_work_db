@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Login</title>
-    <link rel="stylesheet" href="./Login.css" />
+    <link rel="stylesheet" href="./login.css" />
     <!-- CSS only -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css"
@@ -32,11 +32,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav">
-            <a class="nav-link active" aria-current="page" href="./Index.html"
+            <a class="nav-link active" aria-current="page" href="./index.html"
               >Register</a
             >
-            <a class="nav-link" href="./Login.html">Login</a>
-            <a class="nav-link" href="./Users.html">Users</a>
+            <a class="nav-link" href="./login.html">Login</a>
+            <a class="nav-link" href="./users.html">Users</a>
             <a class="nav-link" href="./products.html">Products</a>
           </div>
         </div>
@@ -48,21 +48,22 @@
     <div class="box">
       <div class="Form_Holder">
         <div class="card" style="width: fit-content">
-          <form onsubmit="preventDefault();
-           addTo();" method="post">
+          <form onsubmit="event.preventDefault();
+           UserLogin()">
             <p>Log in to Bookdom</p>
             <fieldset>
               <!-- Username -->
               <label
                 >Enter Email
-                <input type="text" name="user-name" required value=""
+                <input id="email" type="text" name="user-name" required value=""
               /></label>
               <!-- Username done -->
               <!-- Password -->
               <label
                 >Enter Password
-                <input type="text" name="user-name" required value=""
+                <input id="password" type="text" name="user-name" required value=""
               /></label>
+              <a href="#">Forgot Password</a>
               <!-- Password done -->
             </fieldset>
             <!-- Button to submit  -->
@@ -72,46 +73,60 @@
           </form>
           <footer>
             Don't have an account?
-            <a href="./Index.html">Sign Up</router-link>
+            <a href="./index.html">Sign Up</router-link>
           </footer>
         </div>
       </div>
     </div>
     <!-- Login Done -->
     <script>
-      let response = fetch("http://localhost:6969/users");
-
-      function addTo() {
-        const email = document.querySelector("#email").value;
-        const password = document.querySelector("#password").value;
-        const full_name = document.querySelector("#full_name").value;
-        const billing_address = document.querySelector("#billing_address").value;
-        const default_shipping_address = document.querySelector("#default_shipping_address").value;
-        const country = document.querySelector("#country").value;
-        const phone = document.querySelector("#phone").value;
-        const user_type = document.querySelector("#user_type").value;
-
-        fetch("http://localhost:6969/users/"),
-          {
-            method: "POST",
-            headers: {
-              "Content-type": "application/json; charset=UTF-8",
-            },
-            body: JSON.stringify({
-              email: email,
-              password: password,
-              full_name: full_name,
-              billing_address: billing_address,
-              default_shipping_address: default_shipping_address,
-              country: country,
-              phone: phone,
-              user_type: user_type,
-            }),
-          }
-            .then((response) => response.json())
-            .then((json) => console.log(json));
+      async function verify() {
+        const response = await fetch("http://localhost:6969/users/users/verify", {
+          method: "GET",
+          
+          headers: {
+            "Content-type": "application/json",
+            "x-auth-token": JSON.parse(localStorage.token),
+          },
+        });
+        let data = await response.json();
+        if (data == "Unexpected token") {
+          console.log("Not a Token");
+       } else {
+          console.log(data)
+        }
       }
-    </script>
+      async function UserLogin() {
+        const response = await fetch("http://localhost:6969/users/login", {
+          method: "POST",
+          body: JSON.stringify({
+            email: document.querySelector("#email").value,
+            password: document.querySelector("#password").value,
+          }),
+          headers: {
+            "Content-type": "application/json",
+          },
+        });
+        let data = await response.json();
+        if (data == "Password incorrect") {
+          alert("you have mistaken your password my child");
+        } else if (data == "Email not found please register") {
+          alert("Email not found please register");
+        } else {
+          localStorage.setItem("token", JSON.stringify(data.token));
+          console.log(localStorage.token)
+           verify()
+        }
+      }
+
+      let ResetData = () => {
+        localStorage.clear();
+      }
+
+
+      // Verify
+
+      </script>
     <!-- JavaScript Bundle with Popper -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"

@@ -31,11 +31,11 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav">
-            <a class="nav-link active" aria-current="page" href="./Index.html"
+            <a class="nav-link active" aria-current="page" href="./index.html"
               >Register</a
             >
-            <a class="nav-link" href="./Login.html">Login</a>
-            <a class="nav-link" href="./Users.html">Users</a>
+            <a class="nav-link" href="./login.html">Login</a>
+            <a class="nav-link" href="./users.html">Users</a>
             <a class="nav-link" href="./products.html">Products</a>
           </div>
         </div>
@@ -67,7 +67,9 @@
 
       const prodContainer = document.getElementById("products");
 
-      fetch("http://localhost:6969/products")
+      fetch("https://node-js-db-test.herokuapp.com/products", {
+        mode: "no-cors",
+      })
         .then((res) => res.json())
         .then((data) => {
           items = data;
@@ -75,36 +77,39 @@
           showItems(data);
         });
 
+      function getProduct(product_id) {
+        console.log("called");
+        fetch("https://node-js-db-test.herokuapp.com/products/" + product_id);
+        mode: "no-cors"
+          .then((response) => response.json())
+          .then((json) => console.log(json));
+      }
+
       function showItems(products) {
         //   prodContainer.innerHTML = "";
         products.forEach((product) => {
           prodContainer.innerHTML += `
-          
-  
- 
-          <tr>
-      <th scope="row"> ${product.product_id} </th>
-      <td>${product.sku}</td>
-      <td>${product.name}</td>
-      <td>${product.price}</td>
-      <td>${product.weight}</td>
-      <td>${product.descriptions}</td>
-      <td>${product.thumbnail}</td>
-      <td>${product.image}</td>
-      <td>${product.category}</td>
-      <td>${product.create_date}</td>
-      <td>${product.stock}</td>
-      <td><button onclick="singleUser(${product.product_id})">View</butoon></td>
-    </tr>
-    
- 
 
-          `;
+
+
+                <tr>
+            <th scope="row" onclick="getProduct(${product.product_id});"> ${product.product_id} </th>
+            <td>${product.sku}</td>
+            <td>${product.name}</td>
+            <td>${product.price}</td>
+            <td>${product.weight}</td>
+            <td>${product.descriptions}</td>
+            <td>${product.thumbnail}</td>
+            <td>${product.image}</td>
+            <td>${product.category}</td>
+            <td>${product.create_date}</td>
+            <td>${product.stock}</td>
+          </tr>
+
+
+
+                `;
         });
-      }
-
-      function singleUser(id) {
-        console.log(id);
       }
     </script>
     <!-- JavaScript Bundle with Popper -->
