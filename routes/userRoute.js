@@ -3,6 +3,7 @@ const router = express.Router();
 const con = require("../lib/db_connection");
 const jwt = require("jsonwebtoken");
 const middleware = require("../middleware/auth");
+const nodemailer = require("nodemailer");
 
 // Get All Users
 router.get("/", (req, res) => {
@@ -273,9 +274,6 @@ router.get("/", middleware, (req, res) => {
   }
 });
 
-// Importing the dependencies
-const nodemailer = require("nodemailer");
-
 router.post("/forgot-psw", (req, res) => {
   try {
     let sql = "SELECT * FROM users WHERE ?";
@@ -305,23 +303,23 @@ router.post("/forgot-psw", (req, res) => {
 
           subject: "Password Reset",
           html: `<div>
-            <h3>Hi ${result[0].full_name},</h3>
-            <br>
-            <h4>Click link below to reset your password</h4>
+          <h3>Hi ${result[0].full_name},</h3>
+          <br>
+          <h4>Click link below to reset your password</h4>
 
-            <a href="http://localhost:6969/resetPSW.html">
-              Click Here to Reset Password
-              user_id = ${result[0].user_id}
-            </a>
+          <a href="http://localhost:6969/resetPSW.html">
+            Click Here to Reset Password
+            user_id = ${result[0].user_id}
+          </a>
 
+          <br>
+          <p>For any queries feel free to contact us...</p>
+          <div>
+            Email: ${process.env.MAILERUSER}
             <br>
-            <p>For any queries feel free to contact us...</p>
-            <div>
-              Email: ${process.env.MAILERUSER}
-              <br>
-              Tel: If needed you can add this
-            <div>
-          </div>`,
+            Tel: If needed you can add this
+          <div>
+        </div>`,
         };
 
         // Check if email can be sent
@@ -338,7 +336,7 @@ router.post("/forgot-psw", (req, res) => {
           if (error) {
             console.log(error);
           } else {
-            res.send("Please Check your email");
+            res.send("Please Check your email", result[0].user_id);
           }
         });
       }

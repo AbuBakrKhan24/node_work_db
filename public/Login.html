@@ -52,18 +52,18 @@
            UserLogin()">
             <p>Log in to Bookdom</p>
             <fieldset>
-              <!-- Username -->
+              <!-- Email -->
               <label
                 >Enter Email
                 <input id="email" type="text" name="user-name" required value=""
               /></label>
-              <!-- Username done -->
+              <!-- Email done -->
               <!-- Password -->
               <label
                 >Enter Password
                 <input id="password" type="text" name="user-name" required value=""
               /></label>
-              <a href="#">Forgot Password</a>
+              <a href="./" onclick=" forgotPassword();">Forgot Password</a>
               <!-- Password done -->
             </fieldset>
             <!-- Button to submit  -->
@@ -80,6 +80,7 @@
     </div>
     <!-- Login Done -->
     <script>
+       // Verify
       async function verify() {
         const response = await fetch("http://localhost:6969/users/users/verify", {
           method: "GET",
@@ -96,6 +97,10 @@
           console.log(data)
         }
       }
+      // Verify Done
+
+
+      // Login
       async function UserLogin() {
         const response = await fetch("http://localhost:6969/users/login", {
           method: "POST",
@@ -118,13 +123,39 @@
            verify()
         }
       }
+      // Login Done
 
+// Clear cache
       let ResetData = () => {
         localStorage.clear();
       }
+      // Clear cache
 
 
-      // Verify
+      // Forget Password
+      async function forgotPassword() { 
+        alert("Please check your inbox")
+        const email = document.querySelector("#email").value;
+        const response = await fetch("http://localhost:6969/users/forgot-psw", {
+          method: "POST",
+          
+          headers: {
+            "Content-type": "application/json",
+          },
+          body: JSON.stringify({
+            email: email,
+          }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            console.log(data);
+        });
+      }
+      // Forget Password Done
+       
+      
+
+     
 
       </script>
     <!-- JavaScript Bundle with Popper -->
